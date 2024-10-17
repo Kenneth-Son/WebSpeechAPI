@@ -5,6 +5,8 @@ import os
 #initialized to allow python to interact with audio
 r = sr.Recognizer()
  
+keywords = ["exit","error"]
+
 def record_text():
     while(1):
        try:
@@ -40,10 +42,31 @@ def delete_file(filename):
         print("deleted")
     else:
         print("non existent")
+
+def check_keywords(text,keywords):
+    for word in keywords:
+        if word in text:
+            print (f"recognized {word}")
+            if word == 'exit':
+                return True
+    return False
+
+
+
 try:
     while True:
         text = record_text()
+        if text:
+            output_text(text)
+            print("wrote text")
+            if check_keywords(text,keywords):
+                    print("exiting")
+                    raise KeyboardInterrupt
+except KeyboardInterrupt:
+    text = record_text()
+    if text:
         output_text(text)
         print("wrote text")
-except KeyboardInterrupt:
-    delete_file("output.txt")
+        delete_file("output.txt")
+    else:
+        delete_file("output.txt")
