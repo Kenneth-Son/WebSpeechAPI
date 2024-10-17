@@ -1,12 +1,15 @@
 import speech_recognition as sr 
 import pyttsx3 
+import os
 
+#initialized to allow python to interact with audio
 r = sr.Recognizer()
  
 def record_text():
     while(1):
        try:
            with sr.Microphone() as source2:
+               #prepares the recognizer for noise 
                r.adjust_for_ambient_noise(source2, duration=0.2)
 
                audio2 = r.listen(source2)
@@ -19,19 +22,28 @@ def record_text():
            print(e)
        
        except sr.UnknownValueError:
-           print("dun know")
+           print("dun know detected")
                
     return
+
+
 
 def output_text(text):
     f = open("output.txt", "a")
     f.write(text)
     f.write("\n")
-    f.close()
     return
 
-while(1):
-    text = record_text()
-    output_text(text)
-
-    print("wrote text")
+def delete_file(filename):
+    if os.path.exists(filename):
+        os.remove(filename)
+        print("deleted")
+    else:
+        print("non existent")
+try:
+    while True:
+        text = record_text()
+        output_text(text)
+        print("wrote text")
+except KeyboardInterrupt:
+    delete_file("output.txt")
